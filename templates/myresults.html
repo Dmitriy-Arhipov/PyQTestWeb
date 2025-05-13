@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Мои результаты</h1>
+<table>
+    <tr>
+        <th>
+            Тест
+        </th>
+        <th>
+            Результат
+        </th>
+    </tr>
+    {% for res in results %}
+    <tr>
+        <td>
+            <p>Название: {{ res[0] }}</p>
+            <p>Автор: {{ res[1] }}</p>
+        </td>
+        <td>
+            {% for i in results[res] %}
+            <p>Вопрос: {{ i[0] }}</p>
+            <p>Баллов: {{ i[1] }} из {{ i[2] }}</p>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Результаты учеников</h1>
+<table>
+    <tr>
+        <th>
+            Ученик
+        </th>
+        <th>
+            Результат
+        </th>
+    </tr>
+    {% for res in results %}
+    <tr>
+        <td>
+            <p>Ученик: {{ res }}</p>
+        </td>
+        <td>
+            {% for i in results[res] %}
+            <p>Вопрос: {{ i[0] }}</p>
+            <p>Баллов: {{ i[1] }} из {{ i[2] }}</p>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Создание и редактирование вопроса</h1>
+<form action="" method="post">
+    {{ form.csrf_token }}
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.category.label() }} <br>
+        <select class="form-control" name="category">
+            {% for opt in form.category.choices %}
+            {% if def_dict['category']==opt[0] %}
+            <option value="{{ opt[0] }}" selected="selected">{{ opt[0] }}</option>
+            {% else %}
+            <option value="{{ opt[0] }}">{{ opt[0] }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        {% for error in form.category.errors %}
+        <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.ask_text.label() }} <br>
+        <textarea class="form-control" name="ask_text">{{ def_dict['ask_text'] }}</textarea>
+        {% for error in form.ask_text.errors %}
+        <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% for field in form if field.name in ['multimedia', 'points'] %}
+    <div>
+        {{ field.label() }} <br>
+        {{ field(class="form-control", value=def_dict[field.name]) }}
+        {% for error in field.errors %}
+        <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+    <div>
+        {{ form.is_private.label() }}
+        {% if def_dict['is_private']%}
+        <input checked type="checkbox" id="is_private_true" name="is_private"/>
+        {% else %}
+        <input type="checkbox" id="is_private_false" name="is_private"/>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.as_gia.label() }}
+        {% if def_dict['as_gia']%}
+        <input checked type="checkbox" id="as_gia_true" name="as_gia"/>
+        {% else %}
+        <input type="checkbox" id="as_gia_false" name="as_gia"/>
+        {% endif %}
+    </div>
+    <p>
+        {{ form.submit(type="submit", class="btn btn-primary") }}
+        <a class="btn btn-primary" href="{{url_for('edit', user_id=user_id, work_id=work_id)}}">Вернуться в тест</a>
+    </p>
+    {% for i in range(n) %}
+    <div>
+        {{ form.answers[i]['ans_text'].label.text }} <br>
+        <textarea class="form-control" name="answers-{{ i }}-ans_text">{{ form.answers[i]['ans_text'].default }}</textarea>
+        {% for error in form.ask_text.errors %}
+        <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.answers[i]['cor'].label.text }} <br>
+        <select class="form-control" name="answers-{{ i }}-cor">
+            {% for opt in form.answers[i]['cor'].choices %}
+            {% if str(form.answers[i]['cor'].default)==str(opt[0]) %}
+            <option value="{{ opt[0] }}" selected="selected">{{ opt[1] }}</option>
+            {% else %}
+            <option value="{{ opt[0] }}">{{ opt[1] }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        {% for error in form.answers[i]['cor'].errors %}
+        <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</form>
+{% endblock %}

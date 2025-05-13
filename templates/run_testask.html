@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for id in ask_id_lst %}
+<a class="btn btn-success" href="{{ url_for('run_testask', user_id=user_id, work_id=work_id, ask_id=id) }}">{{ loop.index }}</a>
+{% endfor %}
+<h4>{{ ask.ask_text }}</h4><h6>(Баллов: {{ ask.points }})</h6>
+{% if ask.multimedia %}
+Ссылка: <a href="{{ ask.multimedia }}"> {{ ask.multimedia }} </a>
+{% endif %}
+<p>Выберите 1 или несколько вариантов из предложенных:<p>
+<form action="" method="post">
+    {{ form.csrf_token }}
+    {{ form.hidden_tag() }}
+    <div>
+        {% for n in names %}
+        {{n[1]}} {{ form[n[0]] }} <br>
+        {% endfor %}
+    </div>
+    {% for error in form.errors %}
+    <div class="error">{{ error }}</div>
+    {% endfor %}
+    {{ form.submit(class="btn btn-danger")}}
+</form>
+{% endblock %}

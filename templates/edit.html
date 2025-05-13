@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Редактирование теста</h1>
+{% for id in ask_id_lst %}
+<a class="btn btn-success" href="{{ url_for('edit_testask', user_id=user_id, work_id=work_id, ask_id=id) }}">{{ loop.index }}</a>
+{% endfor %}
+<form action="" method="post">
+  {{ nform.csrf_token }}
+  {{ nform.hidden_tag() }}
+<div class="row form-group">
+    <div class="col-3">
+      <p>
+          {{ nform.submit(type="submit", class="btn btn-primary") }}
+          {{ nform.ans_count.label }}
+        {{ nform.ans_count(class="form-control") }}
+        {% for error in nform.ans_count.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+      </p>
+    </div>
+  </div>
+</form>
+{% endblock %}

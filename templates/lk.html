@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 align="center">Личный кабинет</h1>
+<a class="btn btn-success" href="{{url_for('create', user_id=user_id)}}">Создать тест</a>
+<a class="btn btn-success" href="{{ url_for('search', user_id=user_id) }}">Пройти тест</a>
+<a class="btn btn-primary" href="{{ url_for('mytests', user_id=user_id) }}">Мои тесты</a>
+<a class="btn btn-primary" href="{{ url_for('myresults', user_id=user_id) }}">Мои результаты</a>
+<h3>Мой ключ API: {{ user_id }}</h3>
+{% endblock %}

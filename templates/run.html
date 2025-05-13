@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Выполнение теста</h1>
+{% for ask in ask_lst %}
+{% set i = loop.index %}
+<p>
+<h3> Вопрос {{ loop.index }} (Баллов: {{ ask['points'] }}): </h3>
+<p>{{ ask['ask_text'] }}</p>
+{% if ask['multimedia'] %}
+Ссылка: <a href="{{ ask['multimedia'] }}"> {{ ask['multimedia'] }} </a>
+{% endif %}
+<p>Выберите 1 или несколько вариантов из предложенных:<p>
+<form action="" method="post">
+    {{ ask['form'].csrf_token }}
+    {{ ask['form'].hidden_tag() }}
+    {% for ans in ask['form'].answers %}
+    {% set j = loop.index %}
+    <p> {{ ask['answers'][j-1][0] }} {{ ans.cor() }}</p>
+    <div>
+        <input
+                type="checkbox"
+
+                id="answers-{{ j-1 }}-cor"
+        />
+        <label for="answers-{{ j-1 }}-cor">{{ ask['answers'][j-1][0] }}</label>
+    </div>
+    {% endfor %}
+
+</form>
+{% endfor %}
+<p>
+<form action="" method="post">
+    {{ res.csrf_token }}
+    {{ res.hidden_tag() }}
+    {{ res.submit(class="btn btn-danger")}}
+</form>
+</p>
+
+{% endblock %}

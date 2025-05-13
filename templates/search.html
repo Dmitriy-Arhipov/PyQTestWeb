@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Поиск теста</h1>
+<form action="" method="post">
+  {{ form.csrf_token }}
+  {{ form.hidden_tag() }}
+    {% for field in form if field.name in ['fio', 'title', 'work_id'] %}
+    <div class="row form-group">
+    <div class="col-3">
+      <p>
+          {{ field.label() }} <br>
+        {{ field(class="form-control") }}
+        {% for error in field.errors %}
+        <div class="error">{{ error }}</div>
+        {% endfor %}
+      </p>
+    </div>
+  </div>
+    {% endfor %}
+  <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
+Найдено по Вашему запросу:
+{% for w in works %}
+<br><a href="{{ url_for('run', user_id=user_id, work_id=w.id) }}">{{w.title}}</a>
+{% endfor %}
+{% endblock %}

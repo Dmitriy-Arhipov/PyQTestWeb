@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Мои тесты</h1>
+<table>
+        <tr>
+        <th>
+            Название
+        </th>
+        <th>
+            id для учеников
+        </th>
+        <th>
+            Действия
+        </th>
+    </tr>
+{% for test in tests %}
+    <tr>
+        <td>
+            <a href="{{ url_for('edit', user_id=user_id, work_id=test.id) }}">{{ test.title }}</a>
+        </td>
+        <td>
+            <p align="center">{{ test.id }}</p>
+        </td>
+        <td>
+            <p><a class="btn btn-danger" href="{{ url_for('delete', user_id=user_id, work_id=test.id) }}">Удалить тест</a></p>
+            <p><a class="btn btn-success" href="{{ url_for('run', user_id=user_id, work_id=test.id) }}">Пройти тест</a></p>
+            <p><a class="btn btn-success" href="{{ url_for('results', work_id=test.id) }}">Результаты учеников</a></p>
+        </td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
