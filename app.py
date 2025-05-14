@@ -20,14 +20,16 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
     """добавление пользователя"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     return db_sess.query(Users).get(user_id)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """авторизация"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     form = LoginForm()
     if form.validate_on_submit():
         user = db_sess.query(Users).filter(Users.email == form.email.data).first()
@@ -51,6 +53,8 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """регистрация"""
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -92,7 +96,8 @@ def info():
 @login_required
 def create(user_id):
     """создание работы"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     form = TestForm()
     if form.validate_on_submit():
         work = Works(
@@ -110,7 +115,8 @@ def create(user_id):
 @login_required
 def edit(user_id, work_id):
     """редактирование работы"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     w = db_sess.query(Works).filter(Works.id == work_id)[0]
     if w.author_id != user_id:
         return 'Ошибка доступа: Вы не можете редактировать этот тест'
@@ -130,7 +136,8 @@ def edit(user_id, work_id):
 @login_required
 def create_testask(user_id, work_id):
     """создание вопроса"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     with open('globals.json') as f:  # работа с файлами: вместо глобальной переменной json-объект
         d = json.load(f)
     form = AskForm()
@@ -167,7 +174,8 @@ def create_testask(user_id, work_id):
 @login_required
 def edit_testask(user_id, work_id, ask_id):
     """редактирование вопроса"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     w = db_sess.query(Works).filter(Works.id == work_id)[0]
     if w.author_id != user_id:
         return 'Ошибка доступа: Вы не можете редактировать этот тест'
@@ -217,6 +225,8 @@ def edit_testask(user_id, work_id, ask_id):
 @login_required
 def search(user_id):
     """поиск теста по id"""
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     form = SearchTestForm()
     works = []
     if form.validate_on_submit():
@@ -243,7 +253,8 @@ def search(user_id):
 @login_required
 def run(user_id, work_id):
     """запуск в пользовательском режиме всего теста"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     asks = db_sess.query(TestAsks).filter(TestAsks.work_id == work_id)
     return redirect(f'/run/testask/{user_id}/{work_id}/{asks[0].id}')
 
@@ -252,6 +263,8 @@ def run(user_id, work_id):
 @login_required
 def run_testask(user_id, work_id, ask_id):
     """запуск в пользовательском режиме отдельного вопроса"""
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     asks = list(db_sess.query(TestAsks).filter(TestAsks.work_id == work_id))
     ask_id_lst = list(map(lambda t: t.id, asks))
     cur_ask = db_sess.query(TestAsks).filter(TestAsks.id == ask_id)[0]
@@ -305,7 +318,8 @@ def run_testask(user_id, work_id, ask_id):
 @login_required
 def mytests(user_id):
     """список тестов"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     tests = db_sess.query(Works).filter(Works.author_id == user_id)
     return render_template("tests.html", title='Мои тесты', user_id=user_id, tests=tests)
 
@@ -314,7 +328,8 @@ def mytests(user_id):
 @login_required
 def results(work_id):
     """результаты учеников"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     res_lst = db_sess.query(Results).filter(Results.work_id == work_id)
     res_studs = {}
     for res in res_lst:
@@ -330,7 +345,8 @@ def results(work_id):
 @login_required
 def myresults(user_id):
     """результаты самого пользователя"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     res_lst = db_sess.query(Results).filter(Results.student_id == user_id)
     res_works = {}
     for res in res_lst:
@@ -349,7 +365,8 @@ def myresults(user_id):
 @login_required
 def delete(user_id, work_id):
     """удаление теста"""
-    global db_sess
+    global_init("data/PyQTest.db")
+    db_sess = create_session()
     work = db_sess.query(Works).filter(Works.id == work_id)
     if work[0].author_id == user_id:
         db_sess.delete(work[0])
@@ -359,9 +376,6 @@ def delete(user_id, work_id):
 
 
 def main():
-    global db_sess
-    global_init("data/PyQTest.db")
-    db_sess = create_session()
     api.add_resource(WorkResource, '/api/works/<int:id>')
     api.add_resource(AskResource, '/api/testasks/<int:id>')
     api.add_resource(AnsResource, '/api/answers/<int:id>')
